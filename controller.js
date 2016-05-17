@@ -20,15 +20,22 @@
       * Add one notification......
       */
       function addNotification(notification){
-        if(angular.isUndefined(notification) || notification == null || !angular.isObject(notifications)){
-          return null;
+        if(!notification || !angular.isObject(notifications)){ return ; }
+
+        var id;
+
+        if(notification.isReplace && notification.type){
+            closeNotificationByType(notification.type);
         }
 
-        
+        if(angular.isString(notification.message)){
+          id = push(pushNotification(notification.message, notification));
+        }
+        return id;
       }
 
       /**
-      * 
+      *
       */
       function addNotifications(notifications){
         var ids = [], closedTypes = [];
@@ -60,10 +67,17 @@
         return ids;
       }
 
+      /**
+      * Push notification to array of all opened notifications.
+      * @param {String} message - Message for user.
+      * @param {String} [notification] - Notification object.
+      * @return {Number} id - Id of the opened notification.
+      */
       function pushNotification(message, notification){
         var id = Date.now(),
-            promise = notification.isStatic ? null : createTimeout(id),
-            type = notification.type || INFO_TYPE;
+            notObj = notification || {},
+            promise = notObj.isStatic ? null : createTimeout(id),
+            type = notObj.type || INFO_TYPE;
 
         _notifications.push({
           id: id,
@@ -84,10 +98,33 @@
         }, TIMEOUT_TIME);
       }
 
+      /**
+      * Display a simple message.
+      * @param {String} message - Message to display.
+      */
+      function displayMessage(message){
+        if(!angular.isString(message)) { return; }
 
-      function addNotificationWithoutType(notification){
-
+        return pushNotification(message);
       }
+
+      /**
+      * Display messages.
+      * @param {Array} messages - Array of messages to display.
+      * @return {Array} ids - Ids of displayed messages.
+      */
+      function displayMessages(messages){
+        if(!angular.isArray(messages)) { return; }
+
+        var ids = [];
+        messages.forEach(function (message){
+          if(angular.isString(message)){
+            ids.push(pushNotification(message));
+          }
+        });
+        return ids;
+      }
+
 
       function closeNotificationById(id){
 
