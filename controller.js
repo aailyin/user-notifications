@@ -3,7 +3,6 @@
     .module('angularNotifications', [])
     .service('userNotificationsService', ['$timeout', function ($timeout){
       var _notifications = [],
-          _notifications_timeout = [],
           INFO_TYPE = 'info',
           WARN_TYPE = 'warning',
           ERR_TYPE = 'error';
@@ -11,60 +10,51 @@
       return {
         addNotifications: addNotifications,
         addNotificationWithoutType: addNotificationWithoutType,
+        displayMessage: displayMessage,
+        displayMessages: displayMessages,
         closeNotificationById: closeNotificationById,
         closeNotificationByType: closeNotificationByType,
         closeAllNotifications: closeAllNotifications,
       };
-
+      //////////////////////////////////////////////////////////////
       /**
-      * Add one notification......
+      * Display notification.
+      * @param {Object} notification - The notification object.
+      * @return {Number|undefined} id - Id of displayed notification.
       */
       function addNotification(notification){
         if(!notification || !angular.isObject(notifications)){ return ; }
-
-        var id;
 
         if(notification.isReplace && notification.type){
             closeNotificationByType(notification.type);
         }
 
         if(angular.isString(notification.message)){
-          id = push(pushNotification(notification.message, notification));
+          return pushNotification(notification.message, notification);
+        } else if(angular.isArray(notification.message)) {
+          var ids = [];
+          angular.forEach(notification.message, function (message){
+            ids.push(pushNotification(message, notification));
+          });
         }
         return id;
       }
 
       /**
-      *
+      * Display array of notifications.
+      * @param {Array} notifications - The array of notifications.
+      * @return {Array|undefined} ids - The ids of displayed notifications.
       */
       function addNotifications(notifications){
-        var ids = [], closedTypes = [];
+        if(!notifications || !angular.isArray(notifications)) { return; }
 
-        if(angular.isUndefined(notifications) || notifications == null || !angular.isArray(notifications)){
-          return ids;
-        }
+        var ids = [];
 
-        if(angular.isArray(notifications)){
-          notifications.forEach(function (notification){
-
-            if(notification.isReplace && notification.type){
-              if(closedTypes.indexOf(notification.type) === -1){
-                closeNotificationByType(notification.type);
-                closedTypes.push(notification.type);
-              }
-            }
-
-            if(angular.isArray(notification.message)){
-              notification.message.forEach(function (message){
-                ids.push(pushNotification(message, notification));
-              });
-            } else {
-              ids.push(pushNotification(notification.message, notification));
-            }
-          });
-        }
-
-        return ids;
+        angular.forEach(notifications, function (notification){
+          if(notification && angular.isObject(notifications)){
+            ids.push(addNotification(notification));
+          }
+        });
       }
 
       /**
@@ -82,16 +72,17 @@
         _notifications.push({
           id: id,
           message: message,
-          type: type
-        });
-        _notifications_timeout.push({
-          id: id,
           type: type,
           promise: promise
         });
         return id;
       }
 
+      /**
+      * Create a timeout that is used to close notification by id when time passes.
+      * @param {Number} id - Notification id.
+      * @return {Object} promise - Promise object of timeout.
+      */
       function createTimeout(id){
         return $setTimeout(function() {
           closeNotificationById(id);
@@ -100,7 +91,7 @@
 
       /**
       * Display a simple message.
-      * @param {String} message - Message to display.
+      * @param {String|undefined} message - Message to display.
       */
       function displayMessage(message){
         if(!angular.isString(message)) { return; }
@@ -111,7 +102,7 @@
       /**
       * Display messages.
       * @param {Array} messages - Array of messages to display.
-      * @return {Array} ids - Ids of displayed messages.
+      * @return {Array|undefined} ids - Ids of displayed messages.
       */
       function displayMessages(messages){
         if(!angular.isArray(messages)) { return; }
@@ -125,17 +116,45 @@
         return ids;
       }
 
-
+      /**
+      * Close notification by id.
+      * @param {Number} id - Notification id.
+      */
       function closeNotificationById(id){
+        if(!id || !angular.isNumber(id) || !isFinite(id)) { return; }
 
+        angular.forEach(_notifications, function (item, index){
+          if(item.id === id){
+            $timeout.close(item.promise);
+            _notifications.splice(index, 1);
+            return;
+          }
+        });
       }
 
+      /**
+      * Close notification by type.
+      * @param {String} type - Notification type.
+      */
       function closeNotificationByType(type){
+        if(!type || !angular.isString(type)) { return; }
 
+        angular.forEach(_notifications, function (item, index){
+          if(item.type === type){
+            $timeout.close(item.promise);
+            _notifications.splice(index, 1);
+          }
+        });
       }
 
+      /**
+      * Close all notifications.
+      */
       function closeAllNotifications(){
-
+        angular.forEach(_notifications, function (item, index){
+          $timeout.close(item.promise);
+        });
+        _notifications = [];
       }
     }])
     .controller('NotificaitonsController', ['$scope', function ($scope){
