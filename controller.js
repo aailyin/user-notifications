@@ -184,22 +184,22 @@
     .controller('NotificaitonsController', ['$scope', 'userNotificationsService', function ($scope, userNotificationsService){
       var vm = this;
 
-      vm.notificationsTestObjectsWithOneType = { message: ['test1', 'test2', 'test3'], type: 'information'};
+      vm.notificationsTestObjectsWithOneType = { message: ['test1', 'test2', 'test3'], type: 'warning', isStatic: true};
       vm.notificationsTestObjectsWithManyTypes = [ { message: ['test1', 'test2'], type: 'information'},
                                                    { message: 'JustString', type: 'error'}];
       vm.notificationsTestJustArray = ['test1', 'test2', 'test3'];
 
-      //userNotificationsService.addNotification(vm.notificationsTestObjectsWithOneType);
+      userNotificationsService.addNotification(vm.notificationsTestObjectsWithOneType);
       //userNotificationsService.addNotifications(vm.notificationsTestObjectsWithManyTypes);
-      userNotificationsService.displayMessage('LOOOOOOOl');
-      userNotificationsService.displayMessages(['test1', 'test2', 'test3']);
+      //userNotificationsService.displayMessage('LOOOOOOOl');
+      //userNotificationsService.displayMessages(['test1', 'test2', 'test3']);
 
     }])
     .directive('userNotifications', ['$window', 'userNotificationsService', function ($window, userNotificationsService){
       /* Every displayed notification will be hidden after 4000 ms or the value from attributes*/
       return {
         template: '<div class="user-notifications">' +
-                      '<ul><li ng-repeat="item in notifications" ng-class='{{type}}'>{{item.message}}</li></ul>' +
+                      '<ul><li ng-repeat="item in notifications" class="{{item.type}}">{{item.message}}</li></ul>' +
                   '</div>',
         restrict: 'AE',
         link: function (scope, el, attr){

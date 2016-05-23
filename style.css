@@ -1,0 +1,33 @@
+.user-notifications {
+  display: block;
+  position: absolute;
+  left: 50%;
+  width: 300px;
+  margin-left: -150px;
+}
+
+.user-notifications li {
+  list-style-type: none;
+  width: 300px;
+  height: 30px;
+  margin-bottom: 10px;
+  padding: 5px 10px;
+  line-height: 30px;
+  border-radius: 5px;
+}
+
+.user-notifications li.info {
+  background-color: blue;
+}
+
+.user-notifications li.error {
+  background-color: red;
+}
+
+.user-notifications li.success {
+  background-color: green;
+}
+
+.user-notifications li.warning {
+  background-color: orange;
+}
