@@ -184,7 +184,7 @@
     .controller('NotificaitonsController', ['$scope', 'userNotificationsService', function ($scope, userNotificationsService){
       var vm = this;
 
-      vm.notificationsTestObjectsWithOneType = { message: ['test1', 'test2', 'test3'], type: 'warning', isStatic: true};
+      vm.notificationsTestObjectsWithOneType = { message: ['test1', 'test2', 'test3'], type: 'success', isStatic: true};
       vm.notificationsTestObjectsWithManyTypes = [ { message: ['test1', 'test2'], type: 'information'},
                                                    { message: 'JustString', type: 'error'}];
       vm.notificationsTestJustArray = ['test1', 'test2', 'test3'];
