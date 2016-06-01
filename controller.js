@@ -6,7 +6,8 @@
           SUCCESS_TYPE = 'success',
           WARN_TYPE = 'warning',
           ERR_TYPE = 'error',
-          TIMEOUT_TIME = 4000;
+          TIMEOUT_TIME = 4000,
+          _id = 0;
 
 
       var service = {
@@ -69,7 +70,7 @@
       * @return {Number} id - Id of the opened notification.
       */
       function pushNotification(message, notification){
-        var id = Date.now(),
+        var id = _id++,
             notObj = notification || {},
             promise = notObj.isStatic ? null : createTimeout(id),
             type = getType(notObj.type);
@@ -143,12 +144,10 @@
       * @param {Number} id - Notification id.
       */
       function closeNotificationById(id){
-        if(!id || !angular.isNumber(id) || !isFinite(id)) { return; }
+        if(!angular.isNumber(id) || !isFinite(id)) { return; }
 
         angular.forEach(service.notifications, function (item, index){
           if(item.id === id){
-            console.log('Closin id = ' + id);
-
             $timeout.cancel(item.promise);
             service.notifications.splice(index, 1);
             return;
@@ -183,27 +182,30 @@
     }])
     .controller('NotificaitonsController', ['$scope', 'userNotificationsService', function ($scope, userNotificationsService){
       var vm = this;
-
-      vm.notificationsTestObjectsWithOneType = { message: ['test1', 'test2', 'test3'], type: 'success', isStatic: true};
-      vm.notificationsTestObjectsWithManyTypes = [ { message: ['test1', 'test2'], type: 'information'},
+/*
+      vm.notificationsTestObjectsWithOneType = { message: ['tefsdfsdfsdfafdgsdfgsdfgsdfgsdfgsfdgsdfgsdfgsdfgsdfgsfdgsdfgsdfgsdfgsfgsdfgsdfgsfgsdfgdfgsdfgsdfgst1', 'test2', 'test3'], type: 'success', isStatic: true};
+      vm.notificationsTestObjectsWithManyTypes = [ { message: ['test1', 'test2'], type: 'info'},
                                                    { message: 'JustString', type: 'error'}];
       vm.notificationsTestJustArray = ['test1', 'test2', 'test3'];
 
       userNotificationsService.addNotification(vm.notificationsTestObjectsWithOneType);
-      //userNotificationsService.addNotifications(vm.notificationsTestObjectsWithManyTypes);
-      //userNotificationsService.displayMessage('LOOOOOOOl');
-      //userNotificationsService.displayMessages(['test1', 'test2', 'test3']);
+      userNotificationsService.addNotifications(vm.notificationsTestObjectsWithManyTypes);
+      userNotificationsService.displayMessage('LOOffsfgsdfgsdfgsfdgsfdgOOOOOl');
+      userNotificationsService.displayMessages(['test1', 'test2', 'test3']);*/
 
     }])
     .directive('userNotifications', ['$window', 'userNotificationsService', function ($window, userNotificationsService){
       /* Every displayed notification will be hidden after 4000 ms or the value from attributes*/
       return {
         template: '<div class="user-notifications">' +
-                      '<ul><li ng-repeat="item in notifications" class="{{item.type}}">{{item.message}}</li></ul>' +
+                      '<ul><li ng-repeat="item in notifications" class="{{item.type}}"><span class="message">{{item.message}}</span><span class="close" ng-click="close(item.id)"></span></li></ul>' +
                   '</div>',
         restrict: 'AE',
         link: function (scope, el, attr){
           scope.notifications = userNotificationsService.notifications;
+          scope.close = function (id) {
+            userNotificationsService.closeNotificationById(id);
+          };
         }
       };
     }]);

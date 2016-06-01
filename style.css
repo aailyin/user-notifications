@@ -40,3 +40,19 @@
   background-color: #fcf8e3;
   border-color: #faf2cc;
 }
+
+.user-notifications li .message {
+  display: inline-block;
+  max-width: 280px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-notifications li .close {
+  float: right;
+}
+
+.user-notifications li .close:before {
+  content: "\00d7";
+}
