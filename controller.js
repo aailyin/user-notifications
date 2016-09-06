@@ -204,7 +204,6 @@
 
     }])
     .directive('userNotifications', ['$window', 'userNotificationsService', function ($window, userNotificationsService){
-      /* Every displayed notification will be hidden after 4000 ms or the value from attributes*/
       return {
         template: '<div class="user-notifications">' +
                       '<ul><li ng-repeat="item in notifications" class="{{item.type}}"><span class="message">{{item.message}}</span><span class="close" ng-click="close(item.id)"></span></li></ul>' +
