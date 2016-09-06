@@ -1,14 +1,16 @@
 (function (){
   angular
     .module('angularNotifications', [])
-    .service('userNotificationsService', ['$timeout', function ($timeout){
-      var INFO_TYPE = 'info',
-          SUCCESS_TYPE = 'success',
-          WARN_TYPE = 'warning',
-          ERR_TYPE = 'error',
-          TIMEOUT_TIME = 4000,
-          _id = 0;
-      var _notifications = [];
+    .constant('TYPES', {
+      INFO_TYPE: 'info',
+      SUCCESS_TYPE: 'success',
+      WARN_TYPE: 'warning',
+      ERR_TYPE: 'error'
+    })
+    .service('userNotificationsService', ['$timeout', 'TYPES', function ($timeout, TYPES){
+      var TIMEOUT_TIME = 4000,
+          _id = 0,
+          _notifications = [];
 
       var service = {
         addNotification: addNotification,
@@ -24,7 +26,7 @@
       return service;
       //////////////////////////////////////////////////////////////
       /**
-      * Display notification.
+      * Display a notification.
       * @param {Object} notification - The notification object.
       * @return {Number|undefined} id - Id of displayed notification.
       */
@@ -36,11 +38,11 @@
         }
 
         if(angular.isString(notification.message)){
-          return pushNotification(notification.message, notification);
+          return _pushNotification(notification.message, notification);
         } else if(angular.isArray(notification.message)) {
           var ids = [];
           angular.forEach(notification.message, function (message){
-            ids.push(pushNotification(message, notification));
+            ids.push(_pushNotification(message, notification));
           });
           return ids;
         }
@@ -69,7 +71,7 @@
       * @param {String} [notification] - Notification object.
       * @return {Number} id - Id of the opened notification.
       */
-      function pushNotification(message, notification){
+      function _pushNotification(message, notification){
         var id = _id++,
             notObj = notification || {},
             promise = notObj.isStatic ? null : createTimeout(id),
@@ -90,15 +92,10 @@
       * @return {String}
       */
       function getType(type){
-        switch (type) {
-          case INFO_TYPE:
-          case SUCCESS_TYPE:
-          case ERR_TYPE:
-          case WARN_TYPE:
-            return type;
-          default:
-            return INFO_TYPE;
+        if (type && TYPES[type]) {
+          return TYPES[type];
         }
+        return TYPES.INFO_TYPE;
       }
 
       /**
@@ -119,7 +116,7 @@
       function displayMessage(message){
         if(!angular.isString(message)) { return; }
 
-        return pushNotification(message);
+        return _pushNotification(message);
       }
 
       /**
@@ -133,7 +130,7 @@
         var ids = [];
         messages.forEach(function (message){
           if(angular.isString(message)){
-            ids.push(pushNotification(message));
+            ids.push(_pushNotification(message));
           }
         });
         return ids;
@@ -185,11 +182,13 @@
       * @return {Array} 
       */
       function getNotifications() {
-        // TODO: find the way how to incapsulate this data but watch in directive
         return _notifications;
       }
     }])
-    .controller('NotificaitonsController', ['$scope', 'userNotificationsService', function ($scope, userNotificationsService){
+    /*
+      TODO: Test controller that will be replaced to tests
+    */
+    .controller('NotificaitonsController', ['$scope', '$timeout', 'userNotificationsService', function ($scope, $timeout, userNotificationsService){
       var vm = this;
 
       vm.notificationsTestObjectsWithOneType = { message: ['tefsdfsdfsdfafdgsdfgsdfgsdfgsdfgsfdgsdfgsdfgsdfgsdfgsfdgsdfgsdfgsdfgsfgsdfgsdfgsfgsdfgdfgsdfgsdfgst1', 'test2', 'test3'], type: 'success', isStatic: false};
@@ -198,9 +197,9 @@
       vm.notificationsTestJustArray = ['test1', 'test2', 'test3'];
 
       //userNotificationsService.addNotification(vm.notificationsTestObjectsWithOneType);
-     userNotificationsService.addNotifications(vm.notificationsTestObjectsWithManyTypes);
-      userNotificationsService.displayMessage('LOOffsfgsdfgsdfgsfdgsfdgOOOOOl');
-      userNotificationsService.displayMessages(['test1', 'test2', 'test3']);
+      userNotificationsService.addNotifications(vm.notificationsTestObjectsWithManyTypes);
+      $timeout(function () {userNotificationsService.displayMessage('LOOffsfgsdfgsdfgsfdgsfdgOOOOOl');}, 2000 );
+      $timeout(function () {userNotificationsService.displayMessages(['test1', 'test2', 'test3']); }, 5000);
 
     }])
     .directive('userNotifications', ['$window', 'userNotificationsService', function ($window, userNotificationsService){
@@ -210,7 +209,11 @@
                   '</div>',
         restrict: 'AE',
         link: function (scope, el, attr){
-          scope.notifications = userNotificationsService.getNotifications();
+          scope.$watch(function () {
+            return userNotificationsService.getNotifications();
+          }, function () {
+            scope.notifications = userNotificationsService.getNotifications();
+          });
           scope.close = function (id) {
             userNotificationsService.closeNotificationById(id);
           };
