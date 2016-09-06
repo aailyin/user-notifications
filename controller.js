@@ -8,10 +8,9 @@
           ERR_TYPE = 'error',
           TIMEOUT_TIME = 4000,
           _id = 0;
-
+      var _notifications = [];
 
       var service = {
-        notifications: [],
         addNotification: addNotification,
         addNotifications: addNotifications,
         displayMessage: displayMessage,
@@ -19,6 +18,7 @@
         closeNotificationById: closeNotificationById,
         closeNotificationByType: closeNotificationByType,
         closeAllNotifications: closeAllNotifications,
+        getNotifications: getNotifications
       };
 
       return service;
@@ -75,7 +75,7 @@
             promise = notObj.isStatic ? null : createTimeout(id),
             type = getType(notObj.type);
 
-       service.notifications.push({
+       _notifications.push({
           id: id,
           message: message,
           type: type,
@@ -146,10 +146,10 @@
       function closeNotificationById(id){
         if(!angular.isNumber(id) || !isFinite(id)) { return; }
 
-        angular.forEach(service.notifications, function (item, index){
+        angular.forEach(_notifications, function (item, index){
           if(item.id === id){
             $timeout.cancel(item.promise);
-            service.notifications.splice(index, 1);
+            _notifications.splice(index, 1);
             return;
           }
         });
@@ -162,10 +162,10 @@
       function closeNotificationByType(type){
         if(!type || !angular.isString(type)) { return; }
 
-        angular.forEach(service.notifications, function (item, index){
+        angular.forEach(_notifications, function (item, index){
           if(item.type === type){
             $timeout.cancel(item.promise);
-            service.notifications.splice(index, 1);
+            _notifications.splice(index, 1);
           }
         });
       }
@@ -174,24 +174,33 @@
       * Close all notifications.
       */
       function closeAllNotifications(){
-        angular.forEach(service.notifications, function (item, index){
+        angular.forEach(_notifications, function (item, index){
           $timeout.close(item.promise);
         });
-        service.notifications = [];
+        _notifications = [];
+      }
+
+      /**
+      * Get notifications array.
+      * @return {Array} 
+      */
+      function getNotifications() {
+        // TODO: find the way how to incapsulate this data but watch in directive
+        return _notifications;
       }
     }])
     .controller('NotificaitonsController', ['$scope', 'userNotificationsService', function ($scope, userNotificationsService){
       var vm = this;
-/*
-      vm.notificationsTestObjectsWithOneType = { message: ['tefsdfsdfsdfafdgsdfgsdfgsdfgsdfgsfdgsdfgsdfgsdfgsdfgsfdgsdfgsdfgsdfgsfgsdfgsdfgsfgsdfgdfgsdfgsdfgst1', 'test2', 'test3'], type: 'success', isStatic: true};
+
+      vm.notificationsTestObjectsWithOneType = { message: ['tefsdfsdfsdfafdgsdfgsdfgsdfgsdfgsfdgsdfgsdfgsdfgsdfgsfdgsdfgsdfgsdfgsfgsdfgsdfgsfgsdfgdfgsdfgsdfgst1', 'test2', 'test3'], type: 'success', isStatic: false};
       vm.notificationsTestObjectsWithManyTypes = [ { message: ['test1', 'test2'], type: 'info'},
                                                    { message: 'JustString', type: 'error'}];
       vm.notificationsTestJustArray = ['test1', 'test2', 'test3'];
 
-      userNotificationsService.addNotification(vm.notificationsTestObjectsWithOneType);
-      userNotificationsService.addNotifications(vm.notificationsTestObjectsWithManyTypes);
+      //userNotificationsService.addNotification(vm.notificationsTestObjectsWithOneType);
+     userNotificationsService.addNotifications(vm.notificationsTestObjectsWithManyTypes);
       userNotificationsService.displayMessage('LOOffsfgsdfgsdfgsfdgsfdgOOOOOl');
-      userNotificationsService.displayMessages(['test1', 'test2', 'test3']);*/
+      userNotificationsService.displayMessages(['test1', 'test2', 'test3']);
 
     }])
     .directive('userNotifications', ['$window', 'userNotificationsService', function ($window, userNotificationsService){
@@ -202,7 +211,7 @@
                   '</div>',
         restrict: 'AE',
         link: function (scope, el, attr){
-          scope.notifications = userNotificationsService.notifications;
+          scope.notifications = userNotificationsService.getNotifications();
           scope.close = function (id) {
             userNotificationsService.closeNotificationById(id);
           };
