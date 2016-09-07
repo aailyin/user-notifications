@@ -83,7 +83,7 @@ describe('user-notifications-->', function () {
     it('addNotifications should add one valid notification with many messages', function () {
       var notifications = [ { message: ['test1', 'test2'], type: 'info'},
                            { message: 'JustString', type: 'error'}];
-      userNotificationsService.addNotification(notifications);
+      userNotificationsService.addNotifications(notifications);
       expect(userNotificationsService.getNotifications().length).toEqual(3);
     });
 
