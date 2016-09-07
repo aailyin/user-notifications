@@ -80,5 +80,39 @@ describe('user-notifications-->', function () {
       expect(userNotificationsService.getNotifications().length).toEqual(0);
     });
 
-  })
+    it('addNotifications should add one valid notification with many messages', function () {
+      var notifications = [ { message: ['test1', 'test2'], type: 'info'},
+                           { message: 'JustString', type: 'error'}];
+      userNotificationsService.addNotification(notifications);
+      expect(userNotificationsService.getNotifications().length).toEqual(3);
+    });
+
+    it('addNotifications shouldn\'t add incorrect values in messages', function () {
+      userNotificationsService.addNotifications(undefined);
+      expect(userNotificationsService.getNotifications().length).toEqual(0);
+
+      userNotificationsService.addNotifications(null);
+      expect(userNotificationsService.getNotifications().length).toEqual(0);
+
+      userNotificationsService.addNotifications();
+      expect(userNotificationsService.getNotifications().length).toEqual(0);
+
+      userNotificationsService.addNotifications({});
+      expect(userNotificationsService.getNotifications().length).toEqual(0);
+
+      userNotificationsService.addNotifications(NaN);
+      expect(userNotificationsService.getNotifications().length).toEqual(0);
+
+      userNotificationsService.addNotifications(Infinity);
+      expect(userNotificationsService.getNotifications().length).toEqual(0);
+
+      userNotificationsService.addNotifications('test');
+      expect(userNotificationsService.getNotifications().length).toEqual(0);
+
+      userNotificationsService.addNotifications(1);
+      expect(userNotificationsService.getNotifications().length).toEqual(0);
+    });
+
+  });
+
 });
