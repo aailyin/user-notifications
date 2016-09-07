@@ -1,4 +1,4 @@
-(function (){
+
   angular
     .module('userNotifications', [])
     .constant('TYPES', {
@@ -191,7 +191,7 @@
     .controller('NotificaitonsController', ['$scope', '$timeout', 'userNotificationsService', function ($scope, $timeout, userNotificationsService){
       var vm = this;
 
-      vm.notificationsTestObjectsWithOneType = { message: ['tefsdfsdfsdfafdgsdfgsdfgsdfgsdfgsfdgsdfgsdfgsdfgsdfgsfdgsdfgsdfgsdfgsfgsdfgsdfgsfgsdfgdfgsdfgsdfgst1', 'test2', 'test3'], type: 'success', isStatic: false};
+      vm.notificationsTestObjectsWithOneType = { message: ['tefsdfsdfsdfgdfgsdfgsdfgst1', 'test2', 'test3'], type: 'success', isStatic: false};
       vm.notificationsTestObjectsWithManyTypes = [ { message: ['test1', 'test2'], type: 'info'},
                                                    { message: 'JustString', type: 'error'}];
       vm.notificationsTestJustArray = ['test1', 'test2', 'test3'];
@@ -220,4 +220,3 @@
         }
       };
     }]);
-})();
