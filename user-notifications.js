@@ -1,6 +1,6 @@
 (function (){
   angular
-    .module('angularNotifications', [])
+    .module('userNotifications', [])
     .constant('TYPES', {
       INFO_TYPE: 'info',
       SUCCESS_TYPE: 'success',

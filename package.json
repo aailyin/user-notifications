@@ -1,0 +1,23 @@
+{
+  "name": "user-notifications",
+  "version": "0.0.1",
+  "description": "A simple directive to show/hide messages for user",
+  "main": "user-notification.min.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aailyin/user-notifications.git"
+  },
+  "keywords": [
+    "notifications",
+    "angular",
+    "messages"
+  ],
+  "author": {
+    "name": "Anton-Aliaksei Ilyin",
+    "email": "antonaleksei.ilyin@gmail.com"
+  },
+  "license": "MIT"
+}

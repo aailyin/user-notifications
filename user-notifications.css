@@ -51,6 +51,7 @@
 
 .user-notifications li .close {
   float: right;
+  cursor: pointer;
 }
 
 .user-notifications li .close:before {
