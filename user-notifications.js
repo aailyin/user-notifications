@@ -1,4 +1,4 @@
-
+(function (){
   angular
     .module('userNotifications', [])
     .constant('TYPES', {
@@ -7,7 +7,7 @@
       WARN_TYPE: 'warning',
       ERR_TYPE: 'error'
     })
-    .service('userNotificationsService', ['$timeout', 'TYPES', function ($timeout, TYPES){
+    .service('userNotificationsService', ['$filter', '$timeout', 'TYPES', function ($filter, $timeout, TYPES){
       var TIMEOUT_TIME = 4000,
           _id = 0,
           _notifications = [];
@@ -20,7 +20,9 @@
         closeNotificationById: closeNotificationById,
         closeNotificationByType: closeNotificationByType,
         closeAllNotifications: closeAllNotifications,
-        getNotifications: getNotifications
+        getNotifications: getNotifications,
+        setTimeoutTime: setTimeoutTime,
+        getTimeoutTime: getTimeoutTime
       };
 
       return service;
@@ -159,11 +161,16 @@
       function closeNotificationByType(type){
         if(!type || !angular.isString(type)) { return; }
 
+        var ids = [];
+
         angular.forEach(_notifications, function (item, index){
           if(item.type === type){
-            $timeout.cancel(item.promise);
-            _notifications.splice(index, 1);
+            ids.push(item.id);
           }
+        });
+
+        angular.forEach(ids, function (id){
+          closeNotificationById(id);
         });
       }
 
@@ -183,6 +190,26 @@
       */
       function getNotifications() {
         return _notifications;
+      }
+
+      /**
+      * Set the current timeout time.
+      * @param {Number} value New timeout time value.
+      * @return {Boolean}
+      */
+      function setTimeoutTime(value) {
+        if(!value || !angular.isNumber(value)) { return false; }
+
+        TIMEOUT_TIME = value;
+        return true;
+      }
+
+      /**
+      * Get the current timeout time.
+      * @return {Number}
+      */
+      function getTimeoutTime() {
+        return TIMEOUT_TIME;
       }
     }])
     /*
@@ -220,3 +247,4 @@
         }
       };
     }]);
+})();
