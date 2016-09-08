@@ -1,8 +1,8 @@
 {
   "name": "user-notifications",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A simple directive to show/hide messages for user",
-  "main": "user-notification.min.js",
+  "main": "user-notification.js",
   "scripts": {
     "test": "karma start karma.conf.js"
   },
