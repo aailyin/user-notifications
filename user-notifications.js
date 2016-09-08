@@ -30,7 +30,7 @@
       /**
       * Display a notification.
       * @param {Object} notification - The notification object.
-      * @return {Number|undefined} id - Id of displayed notification.
+      * @return {Number|undefined} ids - Ids of displayed notifications.
       */
       function addNotification(notification){
         if(!notification || !angular.isObject(notification)){ return ; }
@@ -94,8 +94,11 @@
       * @return {String}
       */
       function getType(type){
-        if (type && TYPES[type]) {
-          return TYPES[type];
+        switch(type) {
+          case TYPES.SUCCESS_TYPE:
+          case TYPES.WARB_TYPE:
+          case TYPES.ERR_TYPE:
+            return type;
         }
         return TYPES.INFO_TYPE;
       }
@@ -198,7 +201,7 @@
       * @return {Boolean}
       */
       function setTimeoutTime(value) {
-        if(!value || !angular.isNumber(value)) { return false; }
+        if(!value || !angular.isNumber(value) || !isFinite(value)) { return false; }
 
         TIMEOUT_TIME = value;
         return true;
@@ -211,23 +214,6 @@
       function getTimeoutTime() {
         return TIMEOUT_TIME;
       }
-    }])
-    /*
-      TODO: Test controller that will be replaced to tests
-    */
-    .controller('NotificaitonsController', ['$scope', '$timeout', 'userNotificationsService', function ($scope, $timeout, userNotificationsService){
-      var vm = this;
-
-      vm.notificationsTestObjectsWithOneType = { message: ['tefsdfsdfsdfgdfgsdfgsdfgst1', 'test2', 'test3'], type: 'success', isStatic: false};
-      vm.notificationsTestObjectsWithManyTypes = [ { message: ['test1', 'test2'], type: 'info'},
-                                                   { message: 'JustString', type: 'error'}];
-      vm.notificationsTestJustArray = ['test1', 'test2', 'test3'];
-
-      //userNotificationsService.addNotification(vm.notificationsTestObjectsWithOneType);
-      userNotificationsService.addNotifications(vm.notificationsTestObjectsWithManyTypes);
-      $timeout(function () {userNotificationsService.displayMessage('LOOffsfgsdfgsdfgsfdgsfdgOOOOOl');}, 2000 );
-      $timeout(function () {userNotificationsService.displayMessages(['test1', 'test2', 'test3']); }, 5000);
-
     }])
     .directive('userNotifications', ['$window', 'userNotificationsService', function ($window, userNotificationsService){
       return {

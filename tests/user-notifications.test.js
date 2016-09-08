@@ -244,9 +244,6 @@ describe('user-notifications-->', function () {
 
       userNotificationsService.setTimeoutTime('5000');
       expect(userNotificationsService.getTimeoutTime()).toEqual(time);
-
-      userNotificationsService.setTimeoutTime(1);
-      expect(userNotificationsService.getTimeoutTime()).toEqual(time);
     });
   });
 
