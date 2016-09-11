@@ -4,7 +4,7 @@
   "description": "A simple directive to show/hide messages for user",
   "main": "user-notification.js",
   "scripts": {
-    "test": "karma start karma.conf.js"
+    "test": "grunt test"
   },
   "repository": {
     "type": "git",
@@ -21,9 +21,15 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "angular": "^1.4.9",
+    "angular-mocks": "^1.4.9",
+    "grunt": "^1.0.1",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-karma": "^2.0.0",
     "jasmine-core": "^2.5.0",
     "karma": "^1.2.0",
     "karma-chrome-launcher": "^2.0.0",
-    "karma-jasmine": "^1.0.2"
+    "karma-jasmine": "^1.0.2",
+    "karma-phantomjs-launcher": "^1.0.2"
   }
 }
