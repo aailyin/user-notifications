@@ -26,4 +26,4 @@ module.exports = function (grunt) {
   grunt.registerTask('devmode', ['karm:unit', 'watch']);
 
   grunt.registerTask('test', ['karma:travis']);
-}
+};
