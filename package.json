@@ -1,6 +1,6 @@
 {
   "name": "user-notifications",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple directive to show/hide messages for user",
   "main": "user-notification.js",
   "scripts": {
