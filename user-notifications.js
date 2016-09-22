@@ -39,7 +39,7 @@
             closeNotificationByType(notification.type);
         }
 
-        if(angular.isString(notification.message)){
+        if (angular.isString(notification.message)) {
           return _pushNotification(notification.message, notification);
         } else if (angular.isArray(notification.message)) {
           var ids = [];
@@ -73,10 +73,11 @@
       * @param {String} [notification] - Notification object.
       * @return {Number} id - Id of the opened notification.
       */
-      function _pushNotification(message, notification){
+      function _pushNotification(message, notification) {
         var id = _id++,
             notObj = notification || {},
-            promise = notObj.isStatic ? null : createTimeout(id),
+            time = angular.isNumber(id) && isFinite(id) ? notObj.time : TIMEOUT_TIME,
+            promise = notObj.isStatic ? null : createTimeout(id, time),
             type = getType(notObj.type);
 
        _notifications.push({
@@ -93,7 +94,7 @@
       * @param {String} type - Type of notification.
       * @return {String}
       */
-      function getType(type){
+      function getType(type) {
         switch(type) {
           case TYPES.SUCCESS_TYPE:
           case TYPES.WARB_TYPE:
@@ -106,12 +107,13 @@
       /**
       * Create a timeout that is used to close notification by id when time passes.
       * @param {Number} id - Notification id.
+      * @param {Number} time - Time after which the notification will be closed.
       * @return {Object} promise - Promise object of timeout.
       */
-      function createTimeout(id) {
-        return $timeout(function() {
+      function createTimeout(id, time) {
+        return $timeout(function () {
           closeNotificationById(id);
-        }, TIMEOUT_TIME);
+        }, time);
       }
 
       /**
@@ -129,7 +131,7 @@
       * @param {Array} messages - Array of messages to display.
       * @return {Array|undefined} ids - Ids of displayed messages.
       */
-      function displayMessages(messages){
+      function displayMessages(messages) {
         if (!angular.isArray(messages)) { return; }
 
         var ids = [];
@@ -145,7 +147,7 @@
       * Close notification by id.
       * @param {Number} id - Notification id.
       */
-      function closeNotificationById(id){
+      function closeNotificationById(id) {
         if (!angular.isNumber(id) || !isFinite(id)) { return; }
 
         angular.forEach(_notifications, function (item, index) {
@@ -215,13 +217,13 @@
         return TIMEOUT_TIME;
       }
     }])
-    .directive('userNotifications', ['$window', 'userNotificationsService', function ($window, userNotificationsService){
+    .directive('userNotifications', ['$window', 'userNotificationsService', function ($window, userNotificationsService) {
       return {
         template: '<div class="user-notifications">' +
                       '<ul><li ng-repeat="item in notifications" class="{{item.type}}"><span class="message">{{item.message}}</span><span class="close" ng-click="close(item.id)"></span></li></ul>' +
                   '</div>',
         restrict: 'AE',
-        link: function (scope, el, attr){
+        link: function (scope, el, attr) {
           scope.$watch(function () {
             return userNotificationsService.getNotifications();
           }, function () {
