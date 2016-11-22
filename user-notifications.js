@@ -14,16 +14,17 @@
 
       var service = {
         /*TODO: remove notification word from all public methods */
-        addNotification: addNotification,
-        addNotifications: addNotifications,
+        add: add,
+        push: push,
         displayMessage: displayMessage,
         displayMessages: displayMessages,
-        closeNotificationById: closeNotificationById,
-        closeNotificationByType: closeNotificationByType,
-        closeAllNotifications: closeAllNotifications,
-        getNotifications: getNotifications,
+        closeById: closeById,
+        closeByType: closeByType,
+        closeAll: closeAll,
+        getAll: getAll,
         setTimeoutTime: setTimeoutTime,
         getTimeoutTime: getTimeoutTime
+        
       };
 
       return service;
@@ -33,11 +34,11 @@
       * @param {Object} notification - The notification object.
       * @return {Number|undefined} ids - Ids of displayed notifications.
       */
-      function addNotification(notification){
+      function add(notification){
         if(!notification || !angular.isObject(notification)){ return ; }
 
         if(notification.isReplace && notification.type){
-            closeNotificationByType(notification.type);
+            closeByType(notification.type);
         }
 
         if(angular.isString(notification.message)){
@@ -56,14 +57,14 @@
       * @param {Array} notifications - The array of notifications.
       * @return {Array|undefined} ids - The ids of displayed notifications.
       */
-      function addNotifications(notifications){
+      function push(notifications){
         if(!notifications || !angular.isArray(notifications)) { return; }
 
         var ids = [];
 
         angular.forEach(notifications, function (notification){
           if(notification && angular.isObject(notifications)){
-            ids.push(addNotification(notification));
+            ids.push(add(notification));
           }
         });
       }
@@ -111,7 +112,7 @@
       */
       function createTimeout(id){
         return $timeout(function() {
-          closeNotificationById(id);
+          closeById(id);
         }, TIMEOUT_TIME);
       }
 
@@ -146,7 +147,7 @@
       * Close notification by id.
       * @param {Number} id - Notification id.
       */
-      function closeNotificationById(id){
+      function closeById(id){
         if(!angular.isNumber(id) || !isFinite(id)) { return; }
 
         angular.forEach(_notifications, function (item, index){
@@ -162,7 +163,7 @@
       * Close notification by type.
       * @param {String} type - Notification type.
       */
-      function closeNotificationByType(type){
+      function closeByType(type){
         if(!type || !angular.isString(type)) { return; }
 
         var ids = [];
@@ -174,14 +175,14 @@
         });
 
         angular.forEach(ids, function (id){
-          closeNotificationById(id);
+          closeById(id);
         });
       }
 
       /**
       * Close all notifications.
       */
-      function closeAllNotifications(){
+      function closeAll(){
         angular.forEach(_notifications, function (item, index){
           $timeout.close(item.promise);
         });
@@ -192,7 +193,7 @@
       * Get notifications array.
       * @return {Array}
       */
-      function getNotifications() {
+      function getAll() {
         return _notifications;
       }
 
@@ -224,12 +225,12 @@
         restrict: 'AE',
         link: function (scope, el, attr){
           scope.$watch(function () {
-            return userNotificationsService.getNotifications();
+            return userNotificationsService.getAll();
           }, function () {
-            scope.notifications = userNotificationsService.getNotifications();
+            scope.notifications = userNotificationsService.getAll();
           });
           scope.close = function (id) {
-            userNotificationsService.closeNotificationById(id);
+            userNotificationsService.closeById(id);
           };
         }
       };

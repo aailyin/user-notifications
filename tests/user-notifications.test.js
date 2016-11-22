@@ -9,12 +9,12 @@ describe('user-notifications-->', function () {
   }));
 
   describe('all functions should be defined-->', function () {
-    it('addNotification should be defined', function () {
-      expect(userNotificationsService.addNotification).toBeDefined();
+    it('add should be defined', function () {
+      expect(userNotificationsService.add).toBeDefined();
     });
 
-    it('addNotifications should be defined', function () {
-      expect(userNotificationsService.addNotifications).toBeDefined();
+    it('push should be defined', function () {
+      expect(userNotificationsService.push).toBeDefined();
     });
 
     it('displayMessage should be defined', function () {
@@ -25,190 +25,190 @@ describe('user-notifications-->', function () {
       expect(userNotificationsService.displayMessages).toBeDefined();
     });
 
-    it('closeNotificationById should be defined', function () {
-      expect(userNotificationsService.closeNotificationById).toBeDefined();
+    it('closeById should be defined', function () {
+      expect(userNotificationsService.closeById).toBeDefined();
     });
 
-    it('closeNotificationByType should be defined', function () {
-      expect(userNotificationsService.closeNotificationByType).toBeDefined();
+    it('closeByType should be defined', function () {
+      expect(userNotificationsService.closeByType).toBeDefined();
     });
 
-    it('closeAllNotifications should be defined', function () {
-      expect(userNotificationsService.closeAllNotifications).toBeDefined();
+    it('closeAll should be defined', function () {
+      expect(userNotificationsService.closeAll).toBeDefined();
     });
 
-    it('getNotifications should be defined', function () {
-      expect(userNotificationsService.getNotifications).toBeDefined();
+    it('getAll should be defined', function () {
+      expect(userNotificationsService.getAll).toBeDefined();
     });
   });
 
   describe('methods of adding of notifications should work-->', function () {
 
     beforeEach(function () {
-      userNotificationsService.closeAllNotifications();
+      userNotificationsService.closeAll();
     });
 
-    it('addNotification should add one valid notification with many messages', function () {
+    it('add should add one valid notification with many messages', function () {
       var notification = { message: ['test1', 'test2', 'test3'], type: 'success', isStatic: false};
-      userNotificationsService.addNotification(notification);
-      expect(userNotificationsService.getNotifications().length).toEqual(3);
+      userNotificationsService.add(notification);
+      expect(userNotificationsService.getAll().length).toEqual(3);
     });
 
-    it('addNotification shouldn\'t add incorrect values in messages', function () {
-      userNotificationsService.addNotification(undefined);
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+    it('add shouldn\'t add incorrect values in messages', function () {
+      userNotificationsService.add(undefined);
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
-      userNotificationsService.addNotification(null);
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      userNotificationsService.add(null);
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
-      userNotificationsService.addNotification();
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      userNotificationsService.add();
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
-      userNotificationsService.addNotification([]);
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      userNotificationsService.add([]);
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
-      userNotificationsService.addNotification(NaN);
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      userNotificationsService.add(NaN);
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
-      userNotificationsService.addNotification(Infinity);
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      userNotificationsService.add(Infinity);
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
-      userNotificationsService.addNotification('test');
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      userNotificationsService.add('test');
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
-      userNotificationsService.addNotification(1);
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      userNotificationsService.add(1);
+      expect(userNotificationsService.getAll().length).toEqual(0);
     });
 
-    it('addNotifications should add one valid notification with many messages', function () {
+    it('push should add one valid notification with many messages', function () {
       var notifications = [ { message: ['test1', 'test2'], type: 'info'},
                            { message: 'JustString', type: 'error'}];
-      userNotificationsService.addNotifications(notifications);
-      expect(userNotificationsService.getNotifications().length).toEqual(3);
+      userNotificationsService.push(notifications);
+      expect(userNotificationsService.getAll().length).toEqual(3);
     });
 
-    it('addNotifications shouldn\'t add incorrect values in messages', function () {
-      userNotificationsService.addNotifications(undefined);
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+    it('push shouldn\'t add incorrect values in messages', function () {
+      userNotificationsService.push(undefined);
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
-      userNotificationsService.addNotifications(null);
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      userNotificationsService.push(null);
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
-      userNotificationsService.addNotifications();
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      userNotificationsService.push();
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
-      userNotificationsService.addNotifications({});
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      userNotificationsService.push({});
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
-      userNotificationsService.addNotifications(NaN);
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      userNotificationsService.push(NaN);
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
-      userNotificationsService.addNotifications(Infinity);
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      userNotificationsService.push(Infinity);
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
-      userNotificationsService.addNotifications('test');
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      userNotificationsService.push('test');
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
-      userNotificationsService.addNotifications(1);
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      userNotificationsService.push(1);
+      expect(userNotificationsService.getAll().length).toEqual(0);
     });
 
     it('displayMessage should add one valid notification with one message', function () {
       var notification = 'test';
       userNotificationsService.displayMessage(notification);
-      expect(userNotificationsService.getNotifications().length).toEqual(1);
+      expect(userNotificationsService.getAll().length).toEqual(1);
     });
 
     it('displayMessage shouldn\'t add incorrect values in messages', function () {
       userNotificationsService.displayMessage(undefined);
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
       userNotificationsService.displayMessage(null);
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
       userNotificationsService.displayMessage();
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
       userNotificationsService.displayMessage({});
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
       userNotificationsService.displayMessage(NaN);
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
       userNotificationsService.displayMessage(Infinity);
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
       userNotificationsService.displayMessage([]);
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
       userNotificationsService.displayMessage(1);
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      expect(userNotificationsService.getAll().length).toEqual(0);
     });
 
     it('displayMessages should add 3 valid notification with simple messages', function () {
       var notifications = ['test1', 'test2', 'test3'];
       userNotificationsService.displayMessages(notifications);
-      expect(userNotificationsService.getNotifications().length).toEqual(3);
+      expect(userNotificationsService.getAll().length).toEqual(3);
     });
 
     it('displayMessages shouldn\'t add incorrect values in messages', function () {
       userNotificationsService.displayMessages(undefined);
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
       userNotificationsService.displayMessages(null);
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
       userNotificationsService.displayMessages();
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
       userNotificationsService.displayMessages({});
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
       userNotificationsService.displayMessages(NaN);
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
       userNotificationsService.displayMessages(Infinity);
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
       userNotificationsService.displayMessages([1, undefined, NaN]);
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
       userNotificationsService.displayMessages([{}, null, NaN]);
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
       userNotificationsService.displayMessages([1, Infinity, []]);
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      expect(userNotificationsService.getAll().length).toEqual(0);
 
       userNotificationsService.displayMessages(1);
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      expect(userNotificationsService.getAll().length).toEqual(0);
     });
 
-    it('closeNotificationById should close added notification by id', function () {
+    it('closeById should close added notification by id', function () {
       var notification = 'test1';
       var addedNotificationId = userNotificationsService.displayMessage(notification);
-      expect(userNotificationsService.getNotifications().length).toEqual(1);
-      userNotificationsService.closeNotificationById(addedNotificationId);
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      expect(userNotificationsService.getAll().length).toEqual(1);
+      userNotificationsService.closeById(addedNotificationId);
+      expect(userNotificationsService.getAll().length).toEqual(0);
     });
 
-    it('closeNotificationByType should close added notifications by type', function () {
+    it('closeByType should close added notifications by type', function () {
       var notifications = [{message: 'test1', type: 'info'},
                           {message: 'test2', type: 'info'},
                           {message: 'test3', type: 'error'}];
-      userNotificationsService.addNotifications(notifications);
-      expect(userNotificationsService.getNotifications().length).toEqual(3);
-      userNotificationsService.closeNotificationByType('info');
-      expect(userNotificationsService.getNotifications().length).toEqual(1);
-      userNotificationsService.closeNotificationByType('error');
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      userNotificationsService.push(notifications);
+      expect(userNotificationsService.getAll().length).toEqual(3);
+      userNotificationsService.closeByType('info');
+      expect(userNotificationsService.getAll().length).toEqual(1);
+      userNotificationsService.closeByType('error');
+      expect(userNotificationsService.getAll().length).toEqual(0);
     });
 
-    it('closeAllNotifications should close all added notifications', function () {
+    it('closeAll should close all added notifications', function () {
       var notifications = [{message: 'test1', type: 'info'},
                           {message: 'test2', type: 'info'},
                           {message: 'test3', type: 'error'}];
-      userNotificationsService.closeAllNotifications(notifications);
-      expect(userNotificationsService.getNotifications().length).toEqual(0);
+      userNotificationsService.closeAll(notifications);
+      expect(userNotificationsService.getAll().length).toEqual(0);
     });
 
     it('setTimeoutTime should set timeout', function () {
