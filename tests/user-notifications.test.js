@@ -247,4 +247,33 @@ describe('user-notifications-->', function () {
     });
   });
 
+  //TODO: check why it doesnt work
+  /*describe('notification should be closed after some time--->', function () {
+    var timerCallback, notification, time;
+
+    beforeEach(function () {
+      notification = {
+        message: 'Test',
+        callback: function () {}
+      };
+      timerCallback = spyOn(notification, 'callback');
+      jasmine.clock().install();
+    });
+
+    afterEach(function (){
+      jasmine.clock().uninstall();
+    });
+
+    it('notification is closed after default time', function (){
+      time = userNotificationsService.getTimeoutTime() + 1;
+      console.log(time)
+      userNotificationsService.add(notification);
+
+      expect(timerCallback).not.toHaveBeenCalled();
+
+      jasmine.clock().tick(time);
+
+      expect(timerCallback).toHaveBeenCalled();
+    });
+  });*/
 });
