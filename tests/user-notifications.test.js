@@ -247,6 +247,8 @@ describe('user-notifications-->', function () {
     });
   });
 
+
+
   //TODO: check why it doesnt work
   /*describe('notification should be closed after some time--->', function () {
     var timerCallback, notification, time;
