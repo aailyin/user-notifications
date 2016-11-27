@@ -250,7 +250,7 @@ describe('user-notifications-->', function () {
 
 
   //TODO: check why it doesnt work
-  /*describe('notification should be closed after some time--->', function () {
+  describe('notification should be closed after some time--->', function () {
     var timerCallback, notification, time;
 
     beforeEach(function () {
@@ -277,5 +277,5 @@ describe('user-notifications-->', function () {
 
       expect(timerCallback).toHaveBeenCalled();
     });
-  });*/
+  });
 });

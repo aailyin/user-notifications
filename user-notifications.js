@@ -7,7 +7,7 @@
       WARN_TYPE: 'warning',
       ERR_TYPE: 'error'
     })
-    .service('userNotificationsService', ['$filter', '$timeout', 'TYPES', function ($filter, $timeout, TYPES) {
+    .service('userNotificationsService', ['$q', '$filter', '$timeout', 'TYPES', function ($q, $filter, $timeout, TYPES) {
       var TIMEOUT_TIME = 4000,
           _id = 0,
           _notifications = [];
@@ -85,12 +85,8 @@
       function _pushNotification(message, notification) {
         var id = _id++,
             notObj = notification || {},
-            promise = notObj.isStatic ? null : createTimeout(id, notObj.timeout),
+            promise = notObj.isStatic ? null : createTimeout(id, notObj.timeout, notObj.callback),
             type = getType(notObj.type);
-
-        if (angular.isFunction(notObj.callback)) {
-          promise.then(notObj.callback);
-        }
 
        _notifications.push({
           id: id,
@@ -122,14 +118,22 @@
       * @param {Number} id - Notification id.
       * @return {Object} promise - Promise object of timeout.
       */
-      function createTimeout(id, timeout) {
+      function createTimeout(id, timeout, callback) {
+        var deferred;
+        if (angular.isFunction(callback)) {
+          deferred = $q.defer();
+          deferred.promise.then(function () {
+            console.log(111)
+            callback();
+          });
+        }
         timeout = angular.isNumber(timeout) && isFinite(timeout) ? timeout : TIMEOUT_TIME;
         return $timeout(function () {
           closeById(id);
-          if (angular.isFunction(callback)) {
-            callback();
+          if (deferred) {
+            deferred.resolve();
           }
-        }, TIMEOUT_TIME || timeout);
+        }, timeout);
       }
 
       /**
@@ -232,6 +236,22 @@
       function getTimeoutTime() {
         return TIMEOUT_TIME;
       }
+    }])
+    .controller('NotificaitonsController', ['$scope', 'userNotificationsService', function ($scope, userNotificationsService){
+      var vm = this;
+
+      vm.notificationsTestObjectsWithOneType = { message: ['tefsdfsdfsdfafdgsdfgsdfgsdfgsdfgsfdgsdfgsdfgsdfgsdfgsfdgsdfgsdfgsdfgsfgsdfgsdfgsfgsdfgdfgsdfgsdfgst1', 'test2', 'test3'], type: 'success', isStatic: false, callback: function (){
+        console.log('Boom')}
+      };
+      vm.notificationsTestObjectsWithManyTypes = [ { message: ['test1', 'test2'], type: 'info'},
+                                                   { message: 'JustString', type: 'error'}];
+      vm.notificationsTestJustArray = ['test1', 'test2', 'test3'];
+
+      userNotificationsService.add(vm.notificationsTestObjectsWithOneType);
+     //userNotificationsService.addNotifications(vm.notificationsTestObjectsWithManyTypes);
+      userNotificationsService.displayMessage('LOOffsfgsdfgsdfgsfdgsfdgOOOOOl');
+      userNotificationsService.displayMessages(['test1', 'test2', 'test3']);
+
     }])
     .directive('userNotifications', ['$window', 'userNotificationsService', function ($window, userNotificationsService) {
       return {
