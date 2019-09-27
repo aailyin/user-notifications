@@ -123,7 +123,6 @@
         if (angular.isFunction(callback)) {
           deferred = $q.defer();
           deferred.promise.then(function () {
-            console.log(111)
             callback();
           });
         }
